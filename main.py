@@ -37,5 +37,5 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, screenHeight)
 # - 5. Se repite
 while True:
     pantalla_inicio(hands, cap)
-    score = ejecutar_juego(hands, cap, mp_draw, mp_hands)
+    score = ejecutar_juego(hands, cap) # ejecutar_juego(hands, cap, mp_draw, mp_hands)
     pantalla_final(score, hands, cap)

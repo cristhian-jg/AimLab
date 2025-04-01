@@ -2,12 +2,12 @@ import cv2
 from core.utils import cuenta_regresiva, calcular_intervalo
 import time
 from core.pelota import nueva_pelota, dibujar_pelota_degradada
-from config import screenHeight, screenWidth, vida_pelota, duracion_juego
+from config import screenHeight, screenWidth, vida_pelota, duracion_juego, color_pelota_borde, color_pelota_centro
 import math
 import pygame
 
 # Ejecuta el juego y devuelve la puntación obtenida
-def ejecutar_juego(hands, cap, mp_draw, mp_hands):
+def ejecutar_juego(hands, cap):
     cuenta_regresiva(cap)
     cv2.namedWindow("Aimlab", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("Aimlab", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -53,7 +53,7 @@ def ejecutar_juego(hands, cap, mp_draw, mp_hands):
             tiempo_vida_usado = time.time() - pelota["tiempo_creacion"]
             factor = max(0, 1 - (tiempo_vida_usado / vida_pelota))
             radio_animado = max(1, int(pelota["r"] * factor)) 
-            dibujar_pelota_degradada(frame, pelota["x"], pelota["y"], radio_animado, (0, 0, 255), (0, 0, 100))      
+            dibujar_pelota_degradada(frame, pelota["x"], pelota["y"], radio_animado, color_pelota_centro, color_pelota_borde)      
               
         for pelota in pelotas[:]:
             if time.time() - pelota["tiempo_creacion"] > vida_pelota:
@@ -65,7 +65,8 @@ def ejecutar_juego(hands, cap, mp_draw, mp_hands):
         # mediapipe, y busco la distancia a cada pelota para detectar colisiones.
         if result.multi_hand_landmarks:
             for hand_landmarks in result.multi_hand_landmarks:
-                mp_draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+                # Pasar por la función mp_draw y mp_hands si lo voy a utilizar
+                # mp_draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 
                 x = int(hand_landmarks.landmark[8].x * screenWidth)
                 y = int(hand_landmarks.landmark[8].y * screenHeight)

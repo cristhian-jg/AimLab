@@ -1,9 +1,15 @@
-from config import screenWidth, screenHeight
+from config import screenWidth, screenHeight, color_pelota_centro, color_pelota_borde
 import cv2
 import random
 from core.pelota import dibujar_pelota_degradada
 from core.puntuacion import guardar_puntuacion
 import numpy as np
+import pygame
+
+# pygame.mixer.init()
+# pygame.mixer.music.load("assets/audio/main_music.mp3") 
+# pygame.mixer.music.set_volume(0.05)
+# pygame.mixer.music.play(-1)
 
 # Muestra la primera pantalla con un botón que se debe 
 # pulsar con el dedo indice para comenzar a jugar.
@@ -44,7 +50,7 @@ def pantalla_inicio(hands, cap):
                 pelota["vx"] *= -1
             if pelota["y"] < 0 or pelota["y"] > screenHeight:
                 pelota["vy"] *= -1
-            dibujar_pelota_degradada(frame, int(pelota["x"]), int(pelota["y"]), pelota["r"], (100,100,255), (50,50,150))
+            dibujar_pelota_degradada(frame, int(pelota["x"]), int(pelota["y"]), pelota["r"], color_pelota_centro, color_pelota_borde)
 
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (screenWidth, screenHeight))
