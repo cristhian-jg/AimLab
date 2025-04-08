@@ -1,0 +1,3 @@
+([('main',
+   '/Users/crisgon/Proyectos/OpenCV_Projects/AimLab/dist/main',
+   'EXECUTABLE')],)
