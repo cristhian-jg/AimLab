@@ -9,8 +9,18 @@ def nueva_pelota(w, h):
         "x": random.randint(100, w - 100),
         "y": random.randint(100, h - 100),
         "r": 60,
-        "tiempo_creacion": time.time()
+        "tiempo_creacion": time.time(),
+        "tipo": definir_tipo()
     }
+
+def definir_tipo():
+    prob = random.random()
+    if prob < 0.2:
+        return "dorada"
+    elif prob < 0.3:
+        return "roja"
+    else:
+        return "normal"
 
 # Le da un estilo degradado a la pelota
 def dibujar_pelota_degradada(frame, x, y, r, color_centro, color_borde):

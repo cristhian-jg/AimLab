@@ -2,6 +2,7 @@ from config import screenHeight, screenWidth
 import cv2
 import time
 import pygame
+from config import color_pelota_centro_azul
 
 # Reproducción de sonido
 pygame.mixer.init()
@@ -39,7 +40,7 @@ def cuenta_regresiva(cap):
         # fondo = cv2.GaussianBlur(fondo, (25, 25), 0)
         # frame = np.where(condicion[..., None], frame, fondo)
         cv2.putText(frame, str(i), (screenWidth // 2 - 50, screenHeight // 2), cv2.FONT_HERSHEY_DUPLEX, 5,  (0, 255, 0), 5)
-        
+
         inicio = time.time()
         while time.time() - inicio < 1:
             frame_loop = cap.read()[1]
@@ -60,6 +61,7 @@ def cuenta_regresiva(cap):
                 exit()
 
     frame = cap.read()[1]
+
     if frame is not None:
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (screenWidth, screenHeight))
@@ -87,6 +89,7 @@ def cuenta_regresiva(cap):
             # fondo = cv2.GaussianBlur(fondo, (25, 25), 0)
             # frame_loop = np.where(condicion[..., None], frame_loop, fondo)
             cv2.putText(frame_loop, "YA!", (screenWidth // 2 - 100, screenHeight // 2), cv2.FONT_HERSHEY_DUPLEX, 5, (0, 255, 255), 5)
+
             cv2.imshow("Aimlab", frame_loop)
             if cv2.waitKey(1) & 0xFF == 27:
                 exit()

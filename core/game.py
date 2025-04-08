@@ -2,7 +2,7 @@ import cv2
 from core.utils import cuenta_regresiva, calcular_intervalo
 import time
 from core.pelota import nueva_pelota, dibujar_pelota_degradada
-from config import screenHeight, screenWidth, vida_pelota, duracion_juego, color_pelota_borde, color_pelota_centro
+from config import screenHeight, screenWidth, vida_pelota, duracion_juego, color_pelota_borde_azul, color_pelota_centro_azul
 import math
 import pygame
 
@@ -39,7 +39,7 @@ def ejecutar_juego(hands, cap):
         if not ret:
             break
 
-        frame = cv2.flip(frame, 1)
+        frame = cv2.flip(frame, 1) 
         frame = cv2.resize(frame, (screenWidth, screenHeight))
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # resultado_segmentacion = segmentacion.process(frame_rgb)
@@ -52,7 +52,18 @@ def ejecutar_juego(hands, cap):
         for pelota in pelotas:
             tiempo_vida_usado = time.time() - pelota["tiempo_creacion"]
             factor = max(0, 1 - (tiempo_vida_usado / vida_pelota))
-            radio_animado = max(1, int(pelota["r"] * factor)) 
+            radio_animado = max(1, int(pelota["r"] * factor))
+
+            if pelota["tipo"] == "normal":
+                color_pelota_centro = color_pelota_centro_azul
+                color_pelota_borde = color_pelota_borde_azul
+            elif pelota["tipo"] == "dorada":
+                color_pelota_centro = (0, 215, 255)
+                color_pelota_borde = (0, 150, 200)
+            elif pelota["tipo"] == "roja":
+                color_pelota_centro = (0, 0, 255)
+                color_pelota_borde = (0, 0, 255)
+
             dibujar_pelota_degradada(frame, pelota["x"], pelota["y"], radio_animado, color_pelota_centro, color_pelota_borde)      
               
         for pelota in pelotas[:]:
@@ -76,15 +87,36 @@ def ejecutar_juego(hands, cap):
                 for pelota in pelotas[:]:
                     dist = math.hypot(x - pelota["x"], y - pelota["y"])
                     if dist < pelota["r"]:
-                        pop_sound.play()
+                        if pelota["tipo"] == "normal":
+                            score += 1
+                            pop_sound.play()
+                        elif pelota["tipo"] == "dorada":
+                            # Añadir sonido de oro
+                            score += 3
+                            pop_sound.play()
+                        elif pelota["tipo"] == "roja":
+                            score -= 1
+                            # Añadir sonido de fallo
+                            pop_sound.play()
+                        
                         pelotas.remove(pelota)
-                        score += 1
 
         # Puntuación
         cv2.putText(frame, f'Puntuacion: {score}', (10, 40), cv2.FONT_HERSHEY_COMPLEX, 1.2, (255, 255, 255), 2)
         
         # Tiempo restante
         cv2.putText(frame, f"Tiempo: {tiempo_restante}", (10, 80), cv2.FONT_HERSHEY_COMPLEX, 1.2, (0, 255, 255), 2)
+
+        # Leyenda de tipos de pelotas
+        cv2.circle(frame, (screenWidth - 250, 30), 20, color_pelota_centro_azul, -1)
+        cv2.putText(frame, "+1", (screenWidth - 230, 37), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+
+        cv2.circle(frame, (screenWidth - 250, 70), 20, (0, 215, 255), -1)
+        cv2.putText(frame, "+3", (screenWidth - 230, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+
+        cv2.circle(frame, (screenWidth - 250, 110), 20, (0, 0, 255), -1)
+        cv2.putText(frame, "-1", (screenWidth - 230, 117), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
+
 
         cv2.imshow("Aimlab", frame)
         if cv2.waitKey(1) & 0xFF == 27:

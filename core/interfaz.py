@@ -1,4 +1,4 @@
-from config import screenWidth, screenHeight, color_pelota_centro, color_pelota_borde
+from config import screenWidth, screenHeight, color_pelota_centro_azul, color_pelota_borde_azul
 import cv2
 import random
 from core.pelota import dibujar_pelota_degradada
@@ -50,7 +50,8 @@ def pantalla_inicio(hands, cap):
                 pelota["vx"] *= -1
             if pelota["y"] < 0 or pelota["y"] > screenHeight:
                 pelota["vy"] *= -1
-            dibujar_pelota_degradada(frame, int(pelota["x"]), int(pelota["y"]), pelota["r"], color_pelota_centro, color_pelota_borde)
+
+            dibujar_pelota_degradada(frame, int(pelota["x"]), int(pelota["y"]), pelota["r"], color_pelota_centro_azul, color_pelota_borde_azul)
 
         frame = cv2.flip(frame, 1)
         frame = cv2.resize(frame, (screenWidth, screenHeight))
